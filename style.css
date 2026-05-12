@@ -1,4 +1,9 @@
 body {
+<<<<<<< HEAD
   margin: 0;
   overflow: hidden;
+=======
+    margin: 0;
+    overflow: hidden;
+>>>>>>> e1e805c (Initial p5.js setup)
 }
