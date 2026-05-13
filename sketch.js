@@ -383,3 +383,79 @@ function drawFloatingHearts() {
     text("⭐", 200, 450 + sin(frameCount * 0.03) * 12);
     text("💖", 600, 420 + sin(frameCount * 0.05) * 10);
 }
+
+function mousePressed() {
+
+    if (gameState === "START") {
+        gameState = "SCENE_2";
+    }
+
+    else if (gameState === "SCENE_4") {
+
+        for (let i = 0; i < stickerOptions.length; i++) {
+
+            let x = 250 + i * 90;
+
+            if (dist(mouseX, mouseY, x, 550) < 30) {
+                selectedSticker = stickerOptions[i];
+            }
+        }
+
+        if (
+            mouseX > 650 &&
+            mouseX < 760 &&
+            mouseY > 20 &&
+            mouseY < 70
+        ) {
+            gameState = "SCENE_5";
+            dialogueIndex = 0;
+        }
+
+        if (
+            mouseX > 230 &&
+            mouseX < 570 &&
+            mouseY > 45 &&
+            mouseY < 485
+        ) {
+            stickers.push({
+                x: mouseX,
+                y: mouseY,
+                type: selectedSticker
+            });
+        }
+    }
+}
+
+function keyPressed() {
+
+    if (key === "k" || key === "K") {
+
+        if (gameState === "SCENE_2") {
+
+            if (dialogueIndex < dialogues.length - 1) {
+                dialogueIndex++;
+            } else {
+                gameState = "SCENE_3";
+            }
+        }
+
+        else if (gameState === "SCENE_3") {
+            gameState = "SCENE_4";
+        }
+
+        else if (gameState === "SCENE_5") {
+
+            if (dialogueIndex < finalDialogues.length - 1) {
+                dialogueIndex++;
+            } else {
+                gameState = "END";
+            }
+        }
+    }
+
+    if (gameState === "END" && (key === "r" || key === "R")) {
+        gameState = "START";
+        dialogueIndex = 0;
+        stickers = [];
+    }
+}
