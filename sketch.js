@@ -1,10 +1,7 @@
-let gameState = "START";
-let dialogueIndex = 0;
-
-let stickers = [];
-let selectedSticker = "🌸";
-
+let bgMusic, gameState = "START", dialogueIndex = 0;
+let stickers = [], selectedSticker = "🌸";
 let stickerOptions = ["❤️", "⭐", "🌸", "🍀"];
+let girlX = -120;
 
 let dialogues = [
     "'Today is Mother's day... but I don't have money to buy her a gift...'",
@@ -15,46 +12,38 @@ let dialogues = [
 
 let finalDialogues = [
     "'Happy Mother's day mom! I made this for you!'",
-    "'Sweetie... this is so beautiful. I love it so much!'"
+    "'Sweetie... Thank you! You made this for me? It is so beautiful.'",
+    "'I love you so much!'",
+    "'I love you Mumma!'"
 ];
+
+function preload() {
+    bgMusic = loadSound("music.mp3");
+}
 
 function setup() {
     createCanvas(800, 600);
+    bgMusic.setVolume(0.3);
     textFont("Georgia");
     smooth();
 }
 
 function draw() {
-
     background(255);
 
-    if (gameState === "START") {
-        startScreen();
-    }
+    if (!bgMusic.isPlaying()) bgMusic.loop();
 
-    else if (gameState === "SCENE_2") {
-        scene2();
-    }
-
-    else if (gameState === "SCENE_3") {
-        scene3();
-    }
-
-    else if (gameState === "SCENE_4") {
-        scene4();
-    }
-
-    else if (gameState === "SCENE_5") {
-        scene5();
-    }
-
-    else if (gameState === "END") {
-        endScreen();
-    }
+    if (gameState === "START") startScreen();
+    else if (gameState === "SCENE_2") scene2();
+    else if (gameState === "SCENE_3") scene3();
+    else if (gameState === "SCENE_4") scene4();
+    else if (gameState === "SCENE_5") scene5();
+    else if (gameState === "END") endScreen();
 }
 
-function startScreen() {
+/* ---------------- START ---------------- */
 
+function startScreen() {
     drawSoftBackground();
     drawFloatingHearts();
 
@@ -62,17 +51,11 @@ function startScreen() {
 
     fill(60);
     textSize(56);
-
     text("Mother's Day 💖", width / 2, 180);
 
     fill(90);
     textSize(24);
-
-    text(
-        "A tiny story about love and handmade gifts",
-        width / 2,
-        250
-    );
+    text("A tiny story about love and handmade gifts", width / 2, 250);
 
     fill(255, 180, 210);
     stroke(255);
@@ -83,54 +66,67 @@ function startScreen() {
     noStroke();
     fill(40);
 
-    textSize(30);
+    textSize(25);
     text("CLICK TO START", width / 2, 376);
-
-    fill(80);
-    textSize(18);
-
-    text(
-        "Press K to continue dialogues",
-        width / 2,
-        470
-    );
 }
+
+/* ---------------- SCENE 2 ---------------- */
 
 function scene2() {
-
-    rectMode(CORNER);
-
     drawBackground();
     drawLivingRoom();
+    drawRoomLabel("Living Room");
 
-    drawingContext.shadowBlur = 15;
-    drawingContext.shadowColor = 'rgba(0,0,0,0.15)';
-
+    shadowOn();
     drawFurniture();
+    shadowOff();
 
-    drawingContext.shadowBlur = 0;
+    if (girlX < width / 2) girlX += 2;
 
-    drawCharacter(width / 2, 410);
+    drawCharacter(girlX, 410);
 
-    drawDialogueBox("Anna", dialogues[dialogueIndex]);
+    if (girlX >= 120 && dialogueIndex === 0) {
+        fill(255, 255, 255, 220);
+        noStroke();
+
+        rect(30, 70, 320, 110, 15);
+
+        fill(50);
+        textAlign(LEFT, TOP);
+        textSize(15);
+
+        text(
+            "This is Anna.\nShe is an 8-year-old girl who loves drawing,\nmaking cute handmade gifts, and seeing\nher mother smile.",
+            50, 92
+        );
+    }
+
+    if (girlX >= width / 2)
+        drawDialogueBox("Anna", dialogues[dialogueIndex]);
+    else {
+        fill(50);
+        textAlign(CENTER);
+        textSize(24);
+
+        text("Anna is walking into the room...", width / 2, 80);
+    }
 }
 
+/* ---------------- SCENE 3 ---------------- */
+
 function scene3() {
-
-    rectMode(CORNER);
-
     drawBackground();
+    drawRoomLabel("Anna's Room");
 
     noStroke();
-    fill(225, 200, 180);
 
+    fill(225, 200, 180);
     rect(0, 420, width, 180);
 
     fill(220, 180, 230, 170);
     ellipse(420, 510, 320, 110);
 
-    drawingContext.shadowBlur = 12;
-    drawingContext.shadowColor = 'rgba(0,0,0,0.12)';
+    shadowOn();
 
     fill(220, 185, 220);
     rect(500, 310, 220, 95, 20);
@@ -144,38 +140,45 @@ function scene3() {
     fill(255, 230, 150);
     ellipse(220, 275, 50);
 
-    drawingContext.shadowBlur = 0;
+    shadowOff();
 
-    drawCharacter(width / 2, 410);
+    if (girlX > width / 2) girlX -= 2;
 
-    drawDialogueBox(
-        "Anna",
-        "Okay! Time to make the prettiest greeting card ever!"
-    );
+    drawCharacter(girlX, 410);
+
+    if (girlX > width / 2) {
+        fill(50);
+        textAlign(CENTER);
+        textSize(24);
+
+        text("Anna walks into her room...", width / 2, 80);
+    } else {
+        drawDialogueBox(
+            "Anna",
+            "Okay! Time to make the prettiest greeting card ever!"
+        );
+    }
 }
 
+/* ---------------- SCENE 4 ---------------- */
+
 function scene4() {
-
-    rectMode(CORNER);
-
     background(255, 240, 245);
 
-    let cardX = 230;
-    let cardY = 45;
-    let cardW = 340;
-    let cardH = 440;
+    drawRoomLabel("Anna's Room");
+
+    let x = 230, y = 45, w = 340, h = 440;
 
     noStroke();
 
     fill(0, 0, 0, 20);
-    rect(cardX + 8, cardY + 8, cardW, cardH, 15);
+    rect(x + 8, y + 8, w, h, 15);
 
     fill(255);
-
     stroke(230);
     strokeWeight(2);
 
-    rect(cardX, cardY, cardW, cardH, 15);
+    rect(x, y, w, h, 15);
 
     noStroke();
 
@@ -187,20 +190,17 @@ function scene4() {
     text("Happy Mother's Day Mom 💖", width / 2, 90);
 
     fill(120, 80, 120);
-
     textSize(18);
 
     text(
         "Thank you for loving me,\nhelping me, and always making me smile.\n\nYou are the best mom ever 💕",
-        width / 2,
-        170
+        width / 2, 170
     );
 
     textSize(30);
 
-    for (let s of stickers) {
+    for (let s of stickers)
         text(s.type, s.x, s.y);
-    }
 
     fill(245);
     stroke(220);
@@ -208,58 +208,46 @@ function scene4() {
     rect(140, 520, 520, 60, 25);
 
     for (let i = 0; i < stickerOptions.length; i++) {
-
-        let x = 250 + i * 90;
+        let sx = 250 + i * 90;
 
         if (selectedSticker === stickerOptions[i]) {
             fill(255, 180, 210);
-            ellipse(x, 550, 55);
+            ellipse(sx, 550, 55);
         }
 
         noStroke();
         fill(0);
 
         textSize(32);
-        text(stickerOptions[i], x, 560);
+        text(stickerOptions[i], sx, 560);
     }
 
-    let hover =
-        mouseX > 650 &&
-        mouseX < 760 &&
-        mouseY > 20 &&
-        mouseY < 70;
-
-    fill(hover ? color(140, 255, 170) : color(170, 255, 190));
+    fill(mouseX > 650 && mouseX < 760 && mouseY > 20 && mouseY < 70
+        ? color(140, 255, 170)
+        : color(170, 255, 190));
 
     stroke(255);
-
     rect(650, 20, 110, 50, 15);
 
     noStroke();
     fill(50);
 
     textSize(18);
-
     text("DONE", 705, 52);
 
-    drawInstruction(
-        "Click emojis to select • Click card to decorate"
-    );
+    drawInstruction("Click to decorate • C = clear • U = undo");
 }
 
+/* ---------------- SCENE 5 ---------------- */
+
 function scene5() {
-
-    rectMode(CORNER);
-
     drawBackground();
     drawLivingRoom();
+    drawRoomLabel("Living Room");
 
-    drawingContext.shadowBlur = 15;
-    drawingContext.shadowColor = 'rgba(0,0,0,0.15)';
-
+    shadowOn();
     drawFurniture();
-
-    drawingContext.shadowBlur = 0;
+    shadowOff();
 
     drawMom(width / 2 - 90, 410);
     drawCharacter(width / 2 + 90, 410);
@@ -267,10 +255,9 @@ function scene5() {
     drawDialogueBox("Mom", finalDialogues[dialogueIndex]);
 }
 
+/* ---------------- END ---------------- */
+
 function endScreen() {
-
-    rectMode(CORNER);
-
     background(40, 20, 50);
 
     textAlign(CENTER, CENTER);
@@ -286,10 +273,33 @@ function endScreen() {
     text("Press R to restart", width / 2, height / 2 + 50);
 }
 
+/* ---------------- HELPERS ---------------- */
+
+function shadowOn() {
+    drawingContext.shadowBlur = 15;
+    drawingContext.shadowColor = 'rgba(0,0,0,0.15)';
+}
+
+function shadowOff() {
+    drawingContext.shadowBlur = 0;
+}
+
+function drawRoomLabel(name) {
+    noStroke();
+
+    fill(255, 255, 255, 190);
+    rect(20, 15, 150, 35, 12);
+
+    fill(60);
+
+    textAlign(CENTER, CENTER);
+    textSize(16);
+
+    text(name, 95, 33);
+}
+
 function drawSoftBackground() {
-
     for (let y = 0; y < height; y++) {
-
         let c = lerpColor(
             color(255, 215, 230),
             color(190, 225, 255),
@@ -306,7 +316,6 @@ function drawBackground() {
 }
 
 function drawLivingRoom() {
-
     noStroke();
 
     fill(220, 190, 160);
@@ -322,7 +331,6 @@ function drawLivingRoom() {
 }
 
 function drawFurniture() {
-
     fill(150, 100, 80);
     rect(100, 330, 240, 90, 20);
 
@@ -361,17 +369,25 @@ function drawFurniture() {
 }
 
 function drawCharacter(x, y) {
-
     push();
 
     translate(x, y);
 
-    let bob = sin(frameCount * 0.05) * 2;
+    let bob = sin(frameCount * 0.1) * 2;
+    let leg = sin(frameCount * 0.15) * 6;
 
     noStroke();
 
     fill(0, 0, 0, 35);
     ellipse(0, 82, 60, 15);
+
+    stroke(60);
+    strokeWeight(4);
+
+    line(-10, 40, -10 + leg, 70);
+    line(10, 40, 10 - leg, 70);
+
+    noStroke();
 
     fill(255, 180, 210);
     triangle(-30, 40, 30, 40, 0, -40 + bob);
@@ -382,6 +398,7 @@ function drawCharacter(x, y) {
     ellipse(0, -80 + bob, 60, 70);
 
     fill(50, 25, 15);
+
     arc(0, -85 + bob, 68, 78, PI, TWO_PI);
 
     ellipse(-28, -75 + bob, 18, 35);
@@ -401,7 +418,6 @@ function drawCharacter(x, y) {
 }
 
 function drawMom(x, y) {
-
     push();
 
     translate(x, y);
@@ -420,13 +436,17 @@ function drawMom(x, y) {
     ellipse(-12, -82, 5, 7);
     ellipse(12, -82, 5, 7);
 
+    noFill();
+
+    stroke(80, 40, 40);
+    strokeWeight(2);
+
+    arc(0, -65, 22, 12, 0, PI);
+
     pop();
 }
 
 function drawDialogueBox(name, txt) {
-
-    rectMode(CORNER);
-
     fill(255, 255, 255, 238);
 
     stroke(255);
@@ -438,6 +458,7 @@ function drawDialogueBox(name, txt) {
     rect(60, 420, 120, 35, 12);
 
     noStroke();
+
     fill(40);
 
     textAlign(LEFT, CENTER);
@@ -461,10 +482,8 @@ function drawDialogueBox(name, txt) {
 }
 
 function drawInstruction(txt) {
-
-    rectMode(CORNER);
-
     fill(0, 120);
+
     rect(240, 15, 320, 35, 12);
 
     fill(255);
@@ -478,7 +497,6 @@ function drawInstruction(txt) {
 }
 
 function drawFloatingHearts() {
-
     textSize(24);
 
     fill(255, 130, 180);
@@ -489,41 +507,36 @@ function drawFloatingHearts() {
     text("💖", 600, 420 + sin(frameCount * 0.05) * 10);
 }
 
+/* ---------------- INPUT ---------------- */
+
 function mousePressed() {
 
     if (gameState === "START") {
         gameState = "SCENE_2";
+        girlX = -120;
     }
 
     else if (gameState === "SCENE_4") {
 
         for (let i = 0; i < stickerOptions.length; i++) {
-
             let x = 250 + i * 90;
 
-            if (dist(mouseX, mouseY, x, 550) < 30) {
+            if (dist(mouseX, mouseY, x, 550) < 30)
                 selectedSticker = stickerOptions[i];
-            }
         }
 
         if (
-            mouseX > 650 &&
-            mouseX < 760 &&
-            mouseY > 20 &&
-            mouseY < 70
+            mouseX > 650 && mouseX < 760 &&
+            mouseY > 20 && mouseY < 70
         ) {
-
             gameState = "SCENE_5";
             dialogueIndex = 0;
         }
 
         if (
-            mouseX > 230 &&
-            mouseX < 570 &&
-            mouseY > 45 &&
-            mouseY < 485
+            mouseX > 230 && mouseX < 570 &&
+            mouseY > 45 && mouseY < 485
         ) {
-
             stickers.push({
                 x: mouseX,
                 y: mouseY,
@@ -537,40 +550,41 @@ function keyPressed() {
 
     if (key === "k" || key === "K") {
 
-        if (gameState === "SCENE_2") {
+        if (gameState === "SCENE_2" && girlX >= width / 2) {
 
-            if (dialogueIndex < dialogues.length - 1) {
+            if (dialogueIndex < dialogues.length - 1)
                 dialogueIndex++;
-            }
-
             else {
                 gameState = "SCENE_3";
+                girlX = width + 120;
             }
         }
 
-        else if (gameState === "SCENE_3") {
+        else if (gameState === "SCENE_3")
             gameState = "SCENE_4";
-        }
 
         else if (gameState === "SCENE_5") {
 
-            if (dialogueIndex < finalDialogues.length - 1) {
+            if (dialogueIndex < finalDialogues.length - 1)
                 dialogueIndex++;
-            }
-
-            else {
+            else
                 gameState = "END";
-            }
         }
     }
 
-    if (
-        gameState === "END" &&
-        (key === "r" || key === "R")
-    ) {
+    if (gameState === "SCENE_4") {
 
+        if (key === "c" || key === "C")
+            stickers = [];
+
+        if ((key === "u" || key === "U") && stickers.length > 0)
+            stickers.pop();
+    }
+
+    if (gameState === "END" && (key === "r" || key === "R")) {
         gameState = "START";
         dialogueIndex = 0;
         stickers = [];
+        girlX = -120;
     }
 }
