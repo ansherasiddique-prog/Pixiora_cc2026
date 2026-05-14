@@ -31,8 +31,6 @@ function setup() {
 function draw() {
     background(255);
 
-    if (!bgMusic.isPlaying()) bgMusic.loop();
-
     if (gameState === "START") startScreen();
     else if (gameState === "SCENE_2") scene2();
     else if (gameState === "SCENE_3") scene3();
@@ -40,8 +38,6 @@ function draw() {
     else if (gameState === "SCENE_5") scene5();
     else if (gameState === "END") endScreen();
 }
-
-/* ---------------- START ---------------- */
 
 function startScreen() {
     drawSoftBackground();
@@ -70,9 +66,10 @@ function startScreen() {
     text("CLICK TO START", width / 2, 376);
 }
 
-/* ---------------- SCENE 2 ---------------- */
-
 function scene2() {
+
+    if (bgMusic.isPlaying()) bgMusic.stop();
+
     drawBackground();
     drawLivingRoom();
     drawRoomLabel("Living Room");
@@ -111,8 +108,6 @@ function scene2() {
         text("Anna is walking into the room...", width / 2, 80);
     }
 }
-
-/* ---------------- SCENE 3 ---------------- */
 
 function scene3() {
     drawBackground();
@@ -159,8 +154,6 @@ function scene3() {
         );
     }
 }
-
-/* ---------------- SCENE 4 ---------------- */
 
 function scene4() {
     background(255, 240, 245);
@@ -238,8 +231,6 @@ function scene4() {
     drawInstruction("Click to decorate • C = clear • U = undo");
 }
 
-/* ---------------- SCENE 5 ---------------- */
-
 function scene5() {
     drawBackground();
     drawLivingRoom();
@@ -254,8 +245,6 @@ function scene5() {
 
     drawDialogueBox("Mom", finalDialogues[dialogueIndex]);
 }
-
-/* ---------------- END ---------------- */
 
 function endScreen() {
     background(40, 20, 50);
@@ -272,8 +261,6 @@ function endScreen() {
 
     text("Press R to restart", width / 2, height / 2 + 50);
 }
-
-/* ---------------- HELPERS ---------------- */
 
 function shadowOn() {
     drawingContext.shadowBlur = 15;
@@ -374,20 +361,11 @@ function drawCharacter(x, y) {
     translate(x, y);
 
     let bob = sin(frameCount * 0.1) * 2;
-    let leg = sin(frameCount * 0.15) * 6;
 
     noStroke();
 
     fill(0, 0, 0, 35);
     ellipse(0, 82, 60, 15);
-
-    stroke(60);
-    strokeWeight(4);
-
-    line(-10, 40, -10 + leg, 70);
-    line(10, 40, 10 - leg, 70);
-
-    noStroke();
 
     fill(255, 180, 210);
     triangle(-30, 40, 30, 40, 0, -40 + bob);
@@ -507,11 +485,12 @@ function drawFloatingHearts() {
     text("💖", 600, 420 + sin(frameCount * 0.05) * 10);
 }
 
-/* ---------------- INPUT ---------------- */
-
 function mousePressed() {
 
     if (gameState === "START") {
+
+        bgMusic.loop();
+
         gameState = "SCENE_2";
         girlX = -120;
     }
