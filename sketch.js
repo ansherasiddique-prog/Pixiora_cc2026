@@ -357,7 +357,6 @@ function drawFurniture() {
 
 function drawCharacter(x, y) {
     push();
-
     translate(x, y);
 
     let bob = sin(frameCount * 0.1) * 2;
@@ -366,6 +365,16 @@ function drawCharacter(x, y) {
 
     fill(0, 0, 0, 35);
     ellipse(0, 82, 60, 15);
+
+    stroke(60);
+    strokeWeight(4);
+
+    let legSwing = sin(frameCount * 0.15) * 6;
+
+    line(-10, 40, -10 + legSwing, 70);
+    line(10, 40, 10 - legSwing, 70);
+
+    noStroke();
 
     fill(255, 180, 210);
     triangle(-30, 40, 30, 40, 0, -40 + bob);
